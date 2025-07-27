@@ -2,7 +2,7 @@
 
 `DynBrute` is a CLI tool built in Go for brute-forcing web login credentials. This tool can use either provided wordlists for usernames and passwords or generate random credentials, and it attempts to log in, checking for successful authentication based on page redirection. It leverages parallelism to efficiently test large numbers of credential combinations.
 
-> Ensure that Google Chrome or Chromium are installed and accessible in your system's PATH for `DynBrute` to work.
+> #### **Ensure that Google Chrome or Chromium are installed and accessible in your system's PATH for `DynBrute` to work.**
 
 ---
 
