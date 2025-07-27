@@ -26,10 +26,10 @@ jobs:
       - name: Build Go binary
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            go build -o dynbrute.exe ./src/load-check.go
+            go build -o dynbrute.exe ./src/dynbrute.go
             mv dynbrute.exe dynbrute-windows.exe
           else
-            go build -o dynbrute ./src/load-check.go
+            go build -o dynbrute ./src/dynbrute.go
             mv dynbrute dynbrute-linux
           fi
         shell: bash
