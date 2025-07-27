@@ -1,0 +1,65 @@
+name: Build binaries
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release version (e.g., v2.0.0)"
+        required: true
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+
+      - name: Build Go binary
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            go build -o dynbrute.exe ./src/load-check.go
+            mv dynbrute.exe dynbrute-windows.exe
+          else
+            go build -o dynbrute ./src/load-check.go
+            mv dynbrute dynbrute-linux
+          fi
+        shell: bash
+
+      - name: Upload OS-specific binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ runner.os }}
+          path: |
+            dynbrute-*
+
+  merge-artifacts:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Windows binary
+        uses: actions/download-artifact@v4
+        with:
+          name: binary-Windows
+          path: combined-binaries
+
+      - name: Download Linux binary
+        uses: actions/download-artifact@v4
+        with:
+          name: binary-Linux
+          path: combined-binaries
+
+      - name: Upload combined artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ github.event.inputs.release_version }}
+          path: combined-binaries
